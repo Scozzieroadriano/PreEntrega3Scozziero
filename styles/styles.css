@@ -14,51 +14,26 @@ header{
 }
 main{
     background: blue;
-}
-.card {
-    width: 300px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-  }
-
-  .card h2 {
-    margin-top: 0;
-  }
-
-  .team {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+    justify-content: center;
+    align-items: center;    
+}
+.card{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;  
+}
 
-  .team img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-  }
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .team span {
-    font-weight: bold;
-  }
-
-  .button-container {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .button:hover {
-    background-color: #0056b3;
-  }
+.button:hover {
+  background-color: #0056b3;
+}
