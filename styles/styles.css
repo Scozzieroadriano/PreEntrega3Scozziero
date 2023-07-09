@@ -13,23 +13,21 @@ header{
     align-items: center;
 }
 main{
-    background: blue;
     display: flex;
-    justify-content: center;
-    align-items: center;    
+    justify-content: start;
+    align-items: start;    
 }
 .card{
   display: flex;
   gap: 20px;
-  justify-content: center;
-  align-items: center;  
+  flex-direction: column;
   padding: 20px;
   color: white;
 }
 
 .button {
-  padding: 10px 20px;
-  background-color: #007bff;
+  padding: 5px 10px;
+  background-color: #999fa5;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -38,4 +36,66 @@ main{
 
 .button:hover {
   background-color: #0056b3;
+}
+
+.tarjeta {
+  width: 300px;
+  height: 150px;
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  grid-template-columns: repeat(3, 1fr); 
+  grid-template-areas:
+    'fecha fecha fecha' 'equipoLocal partido equipoVisitante' 'grupo grupo grupo';
+  
+}
+.fechaPartido{
+  background-color: red;
+  grid-area: fecha;  
+}
+.equipo{
+  width: 100%;
+  height: 100%;
+  background-color: #007bff;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+.datosEquipo{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.Local{
+  grid-area: equipoLocal;
+}
+.Visitante{
+  grid-area: equipoVisitante;
+}
+.imgEquipo{
+  width: 50px;
+  height: 50px;
+  background-image: url("../img/escudoImg.png");
+  background-size: cover;
+  background-position: center;
+}
+.description{
+  grid-area: grupo;
+  background-color: gray;
+  text-align: center;
+}
+.pronostico{
+  color: black;
+  grid-area: partido;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.marcador{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
