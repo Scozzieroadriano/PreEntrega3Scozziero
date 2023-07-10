@@ -54,42 +54,70 @@ let div = null;
 agregarDiv();
 function agregarDiv() {
   console.log("seguimos on");
-   //Aca valido si el usuario ya inicio sesion y el div existe que no vuelva a crear
-    const container = document.querySelector("#container");
-    partidos.forEach(partido => {
-    div = document.createElement('div');    
+  const container = document.querySelector("#container");
+
+  partidos.forEach(partido => {
+    const div = document.createElement('div');
     div.innerHTML = `
       <div class='tarjeta'>
-      <span class='fechaPartido'> ${partido.fechaPartido}</span>
-      <div class='equipo Local'>
-        <figure class= 'datosEquipo'>
-          <img class='imgEquipo' alt="">
-          <figcaption>${partido.equipoLocal}</figcaption>
-        </figure>
-      </div>
-      <div class='pronostico'>
-        <div class='marcador Local'>
-           <btn class='button'>+</btn>
-           <span class='marcLocal'>-</span>
-           <btn class='button'>-</btn>
+        <span class='fechaPartido'> ${partido.fechaPartido}</span>
+        <div class='equipo Local'>
+          <figure class='datosEquipo'>
+            <img class='imgEquipo' alt="">
+            <figcaption>${partido.equipoLocal}</figcaption>
+          </figure>
         </div>
-        <div class='marcador Visitante'>
-          <btn class='button'>+</btn>
-          <span class='marcVisitante'>-</span>
-          <btn class='button'>-</btn>
-       </div>
+        <div class='pronostico'>
+          <div class='marcador Local'>
+            <button class='button'>+</button>
+            <span class='marcLocal'>-</span>
+            <button class='button'>-</button>
+          </div>
+          <div class='marcador Visitante'>
+            <button class='button'>+</button>
+            <span class='marcVisitante'>-</span>
+            <button class='button'>-</button>
+          </div>
+        </div>
+        <div class='equipo Visitante'>
+          <figure class='datosEquipo'>
+            <img class='imgEquipo' alt="">
+            <figcaption>${partido.equipoVisitante}</figcaption>
+          </figure>
+        </div>
+        <span class='description'>Fecha ${partido.idFecha}</span>
       </div>
-      <div class='equipo Visitante'>
-        <figure class= 'datosEquipo'>
-          <img class='imgEquipo' alt="">
-          <figcaption>${partido.equipoVisitante}</figcaption>
-        </figure>
-      </div>
-      <span class='description'>Fecha ${partido.idFecha}</span>
-      </div>
-      `;
+    `;
 
-    // Agregar el div al cuerpo del documento
+    const incrementarMarcador = div.querySelectorAll('.marcador .button:first-child');
+    const disminuirMarcador = div.querySelectorAll('.marcador .button:last-child');
+
+    incrementarMarcador.forEach(button => {
+      button.addEventListener('click', () => {
+        const span = button.nextElementSibling;
+        let valor = parseInt(span.textContent);
+        if (span.textContent === '-') {
+          valor = 0;
+        } else{
+          valor++;
+        }        
+        span.textContent = valor;
+      });
+    });
+
+    disminuirMarcador.forEach(button => {
+      button.addEventListener('click', () => {
+        const span = button.previousElementSibling;
+        let valor = parseInt(span.textContent);
+        if (span.textContent >= 0 || span.textContent === '-') {
+          valor--;
+        }else{
+          toString(valor) === '-'
+        }        
+        span.textContent = valor;
+      });
+    });
+
     container.appendChild(div);
-  });  
+  });
 }
