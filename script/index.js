@@ -11,9 +11,9 @@ class Usuarios{
 }
 const usuarios = [
  new Usuarios(1, 'Adriano', '1234',0),
- new Usuarios(1, 'Stefano', '1234',0),
- new Usuarios(1, 'Lucas', '1234',0),
- new Usuarios(1, 'Cristian', '1234',0)
+ new Usuarios(1, 'Stefano', '12345',0),
+ new Usuarios(1, 'Lucas', '123456',0),
+ new Usuarios(1, 'Cristian', '1234567',0)
 ];
 
 //Primero creo una clase para simular la base de datos del proyecto
@@ -44,24 +44,28 @@ function Login() {
   validarUsuario(usuario, contrasenia);
 }
 //con este evento inicio la funcion cada vez que apreto el boton que declare antes
-//btnInicioSesion.addEventListener("click", Login);
+btnInicioSesion.addEventListener("click", Login);
 
 //aca valido el usuario 
 function validarUsuario(usuario, contrasenia) {
-  let user = "Administrador";
-  let pass = "123456";
+  let usuarioEncontrado = null;
 
-  if (usuario === user && contrasenia === pass) {
-    
+  for (let i = 0; i < usuarios.length; i++) {
+    if (usuarios[i].usuario === usuario && usuarios[i].password === contrasenia) {
+      usuarioEncontrado = usuarios[i];
+      break;
+    }
+  }
+
+  if (usuarioEncontrado) {
     console.log("Inicio de sesión exitoso");
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
     alert("Ingreso Exitoso");
-    //agregarDiv(usuario)
+    agregarDiv();
+    // Agrega aquí la lógica adicional después de iniciar sesión correctamente
   } else {
-    // Usuario o contraseña incorrectos
     alert("Usuario o contraseña incorrectos");
-    // Restablecer campos de usuario y contraseña
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
   }
@@ -69,7 +73,7 @@ function validarUsuario(usuario, contrasenia) {
 
 let div = null;
 let pronosticoPartidos = [];
-agregarDiv();
+
 function agregarDiv() {
   console.log("seguimos on");
   const container = document.querySelector("#container");
