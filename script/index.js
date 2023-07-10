@@ -1,5 +1,21 @@
 console.log("TAMOS ON")
 
+//Creo una clase para simular a los usuarios cargados en la bdd
+class Usuarios{
+  constructor(idUsuario, usuario, password,puntos){
+        this.id = idUsuario;
+        this.usuario = usuario;
+        this.password = password;
+        this.puntos = puntos;
+  }
+}
+const usuarios = [
+ new Usuarios(1, 'Adriano', '1234',0),
+ new Usuarios(1, 'Stefano', '1234',0),
+ new Usuarios(1, 'Lucas', '1234',0),
+ new Usuarios(1, 'Cristian', '1234',0)
+];
+
 //Primero creo una clase para simular la base de datos del proyecto
 class Partido{
   constructor(idPartido, idFecha, fechaPartido, equipoLocal, marcadorLocal, equipoVisitante, marcadorVisitante){
@@ -20,22 +36,23 @@ const partidos = [
   new Partido(4, 1, '15-07-2023 16:00', 'Equipo 7', 0, 'Equipo 8', 0) 
 ];
 console.log(partidos);
+//declaro una variable para capturar el boton y despues una funcion para capturar los datos de los imputs
 let btnInicioSesion = document.getElementById("btnInicioSesion");
 function Login() {
   let usuario = document.getElementById("username").value;
   let contrasenia = document.getElementById("password").value;
   validarUsuario(usuario, contrasenia);
 }
-
+//con este evento inicio la funcion cada vez que apreto el boton que declare antes
 //btnInicioSesion.addEventListener("click", Login);
 
+//aca valido el usuario 
 function validarUsuario(usuario, contrasenia) {
   let user = "Administrador";
   let pass = "123456";
 
   if (usuario === user && contrasenia === pass) {
-    // Usuario y contraseña válidos
-    // Llamar a otra función o realizar acciones adicionales
+    
     console.log("Inicio de sesión exitoso");
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
@@ -51,6 +68,7 @@ function validarUsuario(usuario, contrasenia) {
 }
 
 let div = null;
+let pronosticoPartidos = [];
 agregarDiv();
 function agregarDiv() {
   console.log("seguimos on");
@@ -109,15 +127,81 @@ function agregarDiv() {
       button.addEventListener('click', () => {
         const span = button.previousElementSibling;
         let valor = parseInt(span.textContent);
-        if (span.textContent >= 0 || span.textContent === '-') {
+        if (valor >= 0) {
           valor--;
-        }else{
-          toString(valor) === '-'
-        }        
-        span.textContent = valor;
+          if (valor === -1) {
+            span.textContent = '-';
+          } else {
+            span.textContent = valor;
+          }
+        }
       });
     });
 
     container.appendChild(div);
   });
+  const btnComparar = document.querySelector("#guardarPronostico");
+  btnComparar.addEventListener('click', () => {   
+
+    partidos.forEach((partido, index) => {
+      const tarjeta = container.children[index];
+      const pronostico = {
+        equipoLocal: partido.equipoLocal,
+        equipoVisitante: partido.equipoVisitante,
+        marcadorLocal: parseInt(tarjeta.querySelector('.marcLocal').textContent),
+        marcadorVisitante: parseInt(tarjeta.querySelector('.marcVisitante').textContent),
+      };
+      pronosticoPartidos.push(pronostico);      
+    });
+    console.log(pronosticoPartidos);
+    localStorage.setItem('pronosticos', JSON.stringify(pronosticoPartidos));
+    // Realizar la comparación con el resultado real del partido
+    // Aquí puedes utilizar el arreglo pronosticoPartidos
+    // y compararlo con el resultado real del partido
+  });
+
+  const btnGenerarAleatorios = document.getElementById('btnAleatorio');
+
+btnGenerarAleatorios.addEventListener('click', () => {
+  partidos.forEach(partido => {
+    // Generar números aleatorios del 1 al 5 para los marcadores
+    const marcadorLocalAleatorio = Math.floor(Math.random() * 5) + 1;
+    const marcadorVisitanteAleatorio = Math.floor(Math.random() * 5) + 1;
+
+    // Asignar los valores aleatorios a los marcadores de cada partido
+    partido.marcadorLocal = marcadorLocalAleatorio;
+    partido.marcadorVisitante = marcadorVisitanteAleatorio;
+  });
+  console.log(partidos);
+  // Actualizar las tarjetas o realizar cualquier otra operación necesaria
+  // ...
+});
+
+const btnComparo = document.getElementById('btnComparoResultados');
+
+btnComparo.addEventListener('click', () => {
+  let puntos = 0;
+
+pronosticoPartidos.forEach((pronostico, index) => {
+  const partido = partidos[index];
+
+  if (pronostico.marcadorLocal === partido.marcadorLocal && pronostico.marcadorVisitante === partido.marcadorVisitante) {
+    console.log(`El pronóstico del partido ${index + 1} es correcto.`);
+    // Sumar 3 puntos si el pronóstico es exacto
+    puntos += 3;
+  } else if ((pronostico.marcadorLocal > pronostico.marcadorVisitante && partido.marcadorLocal > partido.marcadorVisitante) ||
+             (pronostico.marcadorLocal < pronostico.marcadorVisitante && partido.marcadorLocal < partido.marcadorVisitante) ||
+             (pronostico.marcadorLocal === pronostico.marcadorVisitante && partido.marcadorLocal === partido.marcadorVisitante)) {
+    console.log(`El pronóstico del partido ${index + 1} es parcialmente correcto.`);
+    // Sumar 1 punto si solo se acierta el equipo ganador
+    puntos += 1;
+  } else {
+    puntos += 0;
+    // No se suma ningún punto
+  }
+});
+
+console.log(`Puntuación total: ${puntos}`);
+});
 }
+
