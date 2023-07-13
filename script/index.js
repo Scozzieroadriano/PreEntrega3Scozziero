@@ -1,4 +1,4 @@
-console.log("TAMOS ON")
+console.log("ESTAMOS ON")
 
 //Creo una clase para simular a los usuarios cargados en la bdd
 class Usuarios{
@@ -16,9 +16,9 @@ const usuarios = [
  new Usuarios(1, 'Cristian', '1234567',0)
 ];
 
-//Primero creo una clase para simular la base de datos del proyecto
+//Primero creo una clase y objeto para simular la base de datos del proyecto
 class Partido{
-  constructor(idPartido, idFecha, fechaPartido, equipoLocal, marcadorLocal, equipoVisitante, marcadorVisitante){
+  constructor(idPartido, idFecha, fechaPartido, equipoLocal, marcadorLocal, equipoVisitante, marcadorVisitante, pronosticoLocal, pronosticoVisitante){
     this.id = idPartido;
     this.idFecha = idFecha;
     this.fechaPartido = fechaPartido;
@@ -26,14 +26,16 @@ class Partido{
     this.marcadorLocal = marcadorLocal;
     this.equipoVisitante = equipoVisitante;
     this.marcadorVisitante = marcadorVisitante;
+    this.pronosticoLocal = pronosticoLocal;
+    this.pronosticoVisitante = pronosticoVisitante;
   }
 };
 // Acá creo el array de todos los partidos de una de las fechas
 const partidos = [
-  new Partido(1, 1, '15-07-2023 16:00', 'Equipo 1', 0, 'Equipo 2', 0), 
-  new Partido(2, 1, '15-07-2023 16:00', 'Equipo 3', 0, 'Equipo 4', 0), 
-  new Partido(3, 1, '15-07-2023 16:00', 'Equipo 5', 0, 'Equipo 6', 0), 
-  new Partido(4, 1, '15-07-2023 16:00', 'Equipo 7', 0, 'Equipo 8', 0) 
+  new Partido(1, 1, '15-07-2023 16:00', 'Equipo 1', 0, 'Equipo 2', 0, '-','-'), 
+  new Partido(2, 1, '15-07-2023 16:00', 'Equipo 3', 0, 'Equipo 4', 0, '-','-'), 
+  new Partido(3, 1, '15-07-2023 16:00', 'Equipo 5', 0, 'Equipo 6', 0, '-','-'), 
+  new Partido(4, 1, '15-07-2023 16:00', 'Equipo 7', 0, 'Equipo 8', 0, '-','-') 
 ];
 console.log(partidos);
 //declaro una variable para capturar el boton y despues una funcion para capturar los datos de los imputs
@@ -73,7 +75,7 @@ function validarUsuario(usuario, contrasenia) {
 
 let div = null;
 let pronosticoPartidos = [];
-
+agregarDiv();
 function agregarDiv() {
   console.log("seguimos on");
   const container = document.querySelector("#container");
@@ -92,14 +94,28 @@ function agregarDiv() {
         <div class='pronostico'>
           <div class='marcador Local'>
             <button class='button'>+</button>
-            <span class='marcLocal'>-</span>
+            <span class='marcLocal'>${partido.pronosticoLocal}</span>
             <button class='button'>-</button>
           </div>
           <div class='marcador Visitante'>
             <button class='button'>+</button>
-            <span class='marcVisitante'>-</span>
+            <span class='marcVisitante'>${partido.pronosticoVisitante}</span>
             <button class='button'>-</button>
           </div>
+        </div>
+        <div class='resultado'> 
+          <div>
+            <div>Resultado:</div>
+            <span class='resLocal'>${partido.marcadorLocal}</span>
+            <span>-</span>
+            <span class='resVisit'>${partido.marcadorVisitante}</span>
+          </div>          
+          <div>
+            <div>Tu Pronostico:</div>
+            <span class='pronosticoLocal'></span>
+            <span>-</span>
+            <span class='pronosticoVisitante'></span>
+          </div>          
         </div>
         <div class='equipo Visitante'>
           <figure class='datosEquipo'>
@@ -110,7 +126,7 @@ function agregarDiv() {
         <span class='description'>Fecha ${partido.idFecha}</span>
       </div>
     `;
-
+    container.appendChild(div);
     const incrementarMarcador = div.querySelectorAll('.marcador .button:first-child');
     const disminuirMarcador = div.querySelectorAll('.marcador .button:last-child');
 
@@ -142,27 +158,27 @@ function agregarDiv() {
       });
     });
 
-    container.appendChild(div);
+    
   });
-  const btnComparar = document.querySelector("#guardarPronostico");
-  btnComparar.addEventListener('click', () => {   
+  const btnGuardar = document.querySelector("#guardarPronostico");
 
+  btnGuardar.addEventListener('click', () => {   
     partidos.forEach((partido, index) => {
       const tarjeta = container.children[index];
-      const pronostico = {
-        equipoLocal: partido.equipoLocal,
-        equipoVisitante: partido.equipoVisitante,
-        marcadorLocal: parseInt(tarjeta.querySelector('.marcLocal').textContent),
-        marcadorVisitante: parseInt(tarjeta.querySelector('.marcVisitante').textContent),
-      };
-      pronosticoPartidos.push(pronostico);      
+      const marcadorLocal = parseInt(tarjeta.querySelector('.marcLocal').textContent);
+      const marcadorVisitante = parseInt(tarjeta.querySelector('.marcVisitante').textContent);
+      const pronosticoLocalSpan = tarjeta.querySelector('.pronosticoLocal');
+      const pronosticoVisitanteSpan = tarjeta.querySelector('.pronosticoVisitante');
+      //Modifico la propiedad de cada objeto del array
+      partido.pronosticoLocal = marcadorLocal;
+      partido.pronosticoVisitante = marcadorVisitante;      
+      //Modifico la etiqueta html
+      pronosticoLocalSpan.textContent = marcadorLocal;
+      pronosticoVisitanteSpan.textContent = marcadorVisitante;
     });
-    console.log(pronosticoPartidos);
-    localStorage.setItem('pronosticos', JSON.stringify(pronosticoPartidos));
-    // Realizar la comparación con el resultado real del partido
-    // Aquí puedes utilizar el arreglo pronosticoPartidos
-    // y compararlo con el resultado real del partido
+    console.log(partidos)
   });
+  
 
   const btnGenerarAleatorios = document.getElementById('btnAleatorio');
 

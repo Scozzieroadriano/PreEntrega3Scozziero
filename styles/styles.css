@@ -90,6 +90,7 @@ main{
   width: 100%;
   height: 100%;
   display: flex;
+  visibility: visible;
 }
 .marcador{
   width: 50%;
@@ -98,4 +99,20 @@ main{
   justify-content: center;
   align-items: center;
   gap: 5px;
+}
+.resultado{
+  color: black;
+  /*grid-area: partido;*/
+  width: 100%;
+  height: 100%;  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  visibility: visible;
+ 
+}
+.resultado div{
+  text-align: center;
+  line-height: 1.5;
+  font-size: .8rem;
 }
