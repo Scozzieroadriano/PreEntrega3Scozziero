@@ -45,7 +45,7 @@ main{
   grid-template-rows: 20px 1fr 20px;
   grid-template-columns: repeat(3, 1fr); 
   grid-template-areas:
-    'fecha fecha fecha' 'equipoLocal partido equipoVisitante' 'grupo grupo grupo';
+    'fecha fecha pts' 'equipoLocal partido equipoVisitante' 'grupo grupo grupo';
   
 }
 .fechaPartido{
@@ -102,17 +102,24 @@ main{
 }
 .resultado{
   color: black;
-  /*grid-area: partido;*/
+  grid-area: partido;
   width: 100%;
   height: 100%;  
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  visibility: visible;
+  visibility: hidden;
  
 }
 .resultado div{
   text-align: center;
   line-height: 1.5;
   font-size: .8rem;
+}
+.pts{
+  grid-area: pts;
+  color: black;
+  background-color: red;
+  text-align: end;
+  padding-right: 10px;
 }

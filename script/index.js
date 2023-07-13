@@ -1,24 +1,24 @@
 console.log("ESTAMOS ON")
 
 //Creo una clase para simular a los usuarios cargados en la bdd
-class Usuarios{
-  constructor(idUsuario, usuario, password,puntos){
-        this.id = idUsuario;
-        this.usuario = usuario;
-        this.password = password;
-        this.puntos = puntos;
+class Usuarios {
+  constructor(idUsuario, usuario, password, puntos) {
+    this.id = idUsuario;
+    this.usuario = usuario;
+    this.password = password;
+    this.puntos = puntos;
   }
 }
 const usuarios = [
- new Usuarios(1, 'Adriano', '1234',0),
- new Usuarios(1, 'Stefano', '12345',0),
- new Usuarios(1, 'Lucas', '123456',0),
- new Usuarios(1, 'Cristian', '1234567',0)
+  new Usuarios(1, 'Adriano', '1234', 0),
+  new Usuarios(2, 'Stefano', '12345', 0),
+  new Usuarios(3, 'Lucas', '123456', 0),
+  new Usuarios(4, 'Cristian', '1234567', 0)
 ];
 
 //Primero creo una clase y objeto para simular la base de datos del proyecto
-class Partido{
-  constructor(idPartido, idFecha, fechaPartido, equipoLocal, marcadorLocal, equipoVisitante, marcadorVisitante, pronosticoLocal, pronosticoVisitante){
+class Partido {
+  constructor(idPartido, idFecha, fechaPartido, equipoLocal, marcadorLocal, equipoVisitante, marcadorVisitante, pronosticoLocal, pronosticoVisitante) {
     this.id = idPartido;
     this.idFecha = idFecha;
     this.fechaPartido = fechaPartido;
@@ -32,10 +32,10 @@ class Partido{
 };
 // Acá creo el array de todos los partidos de una de las fechas
 const partidos = [
-  new Partido(1, 1, '15-07-2023 16:00', 'Equipo 1', 0, 'Equipo 2', 0, '-','-'), 
-  new Partido(2, 1, '15-07-2023 16:00', 'Equipo 3', 0, 'Equipo 4', 0, '-','-'), 
-  new Partido(3, 1, '15-07-2023 16:00', 'Equipo 5', 0, 'Equipo 6', 0, '-','-'), 
-  new Partido(4, 1, '15-07-2023 16:00', 'Equipo 7', 0, 'Equipo 8', 0, '-','-') 
+  new Partido(1, 1, '15-07-2023 16:00', 'Equipo 1', 0, 'Equipo 2', 0, '-', '-'),
+  new Partido(2, 1, '15-07-2023 16:00', 'Equipo 3', 0, 'Equipo 4', 0, '-', '-'),
+  new Partido(3, 1, '15-07-2023 16:00', 'Equipo 5', 0, 'Equipo 6', 0, '-', '-'),
+  new Partido(4, 1, '15-07-2023 16:00', 'Equipo 7', 0, 'Equipo 8', 0, '-', '-')
 ];
 console.log(partidos);
 //declaro una variable para capturar el boton y despues una funcion para capturar los datos de los imputs
@@ -47,10 +47,10 @@ function Login() {
 }
 //con este evento inicio la funcion cada vez que apreto el boton que declare antes
 btnInicioSesion.addEventListener("click", Login);
-
+//creo la variable para usar el id del usuario y darle el puntaje al usuario logeado
+let usuarioEncontrado = null;
 //aca valido el usuario 
 function validarUsuario(usuario, contrasenia) {
-  let usuarioEncontrado = null;
 
   for (let i = 0; i < usuarios.length; i++) {
     if (usuarios[i].usuario === usuario && usuarios[i].password === contrasenia) {
@@ -74,8 +74,6 @@ function validarUsuario(usuario, contrasenia) {
 }
 
 let div = null;
-let pronosticoPartidos = [];
-agregarDiv();
 function agregarDiv() {
   console.log("seguimos on");
   const container = document.querySelector("#container");
@@ -85,6 +83,7 @@ function agregarDiv() {
     div.innerHTML = `
       <div class='tarjeta'>
         <span class='fechaPartido'> ${partido.fechaPartido}</span>
+        <span class='pts'>-</span>
         <div class='equipo Local'>
           <figure class='datosEquipo'>
             <img class='imgEquipo' alt="">
@@ -136,9 +135,9 @@ function agregarDiv() {
         let valor = parseInt(span.textContent);
         if (span.textContent === '-') {
           valor = 0;
-        } else{
+        } else {
           valor++;
-        }        
+        }
         span.textContent = valor;
       });
     });
@@ -158,70 +157,131 @@ function agregarDiv() {
       });
     });
 
-    
+
   });
   const btnGuardar = document.querySelector("#guardarPronostico");
 
-  btnGuardar.addEventListener('click', () => {   
+  btnGuardar.addEventListener('click', () => {
     partidos.forEach((partido, index) => {
       const tarjeta = container.children[index];
       const marcadorLocal = parseInt(tarjeta.querySelector('.marcLocal').textContent);
       const marcadorVisitante = parseInt(tarjeta.querySelector('.marcVisitante').textContent);
       const pronosticoLocalSpan = tarjeta.querySelector('.pronosticoLocal');
       const pronosticoVisitanteSpan = tarjeta.querySelector('.pronosticoVisitante');
+
       //Modifico la propiedad de cada objeto del array
       partido.pronosticoLocal = marcadorLocal;
-      partido.pronosticoVisitante = marcadorVisitante;      
+      partido.pronosticoVisitante = marcadorVisitante;
       //Modifico la etiqueta html
-      pronosticoLocalSpan.textContent = marcadorLocal;
-      pronosticoVisitanteSpan.textContent = marcadorVisitante;
+      if (marcadorLocal === null || marcadorVisitante === null) {
+        pronosticoLocalSpan.textContent = ' ';
+        pronosticoVisitanteSpan.textContent = ' ';
+      } else {
+        pronosticoLocalSpan.textContent = marcadorLocal;
+        pronosticoVisitanteSpan.textContent = marcadorVisitante;
+      }
     });
     console.log(partidos)
   });
-  
+
 
   const btnGenerarAleatorios = document.getElementById('btnAleatorio');
 
-btnGenerarAleatorios.addEventListener('click', () => {
-  partidos.forEach(partido => {
-    // Generar números aleatorios del 1 al 5 para los marcadores
-    const marcadorLocalAleatorio = Math.floor(Math.random() * 5) + 1;
-    const marcadorVisitanteAleatorio = Math.floor(Math.random() * 5) + 1;
+  btnGenerarAleatorios.addEventListener('click', () => {
+    partidos.forEach((partido, index) => {
+      // Generar números aleatorios del 1 al 5 para los marcadores
+      const tarjeta = container.children[index];
+      const marcadorLocalAleatorio = Math.floor(Math.random() * 5) + 1;
+      const marcadorVisitanteAleatorio = Math.floor(Math.random() * 5) + 1;
+      const marcadorLocal = tarjeta.querySelector('.resLocal');
+      const marcadorVisitante = tarjeta.querySelector('.resVisit');
+      const resultado = tarjeta.querySelector('.resultado');
+      const pronostico = tarjeta.querySelector('.pronostico');
+      // Asignar los valores aleatorios a los marcadores de cada partido
+      partido.marcadorLocal = marcadorLocalAleatorio;
+      partido.marcadorVisitante = marcadorVisitanteAleatorio;
+      //Asigno resultado a la etiqueta html
+      
+      marcadorLocal.textContent = marcadorLocalAleatorio;
+      marcadorVisitante.textContent = marcadorVisitanteAleatorio;
 
-    // Asignar los valores aleatorios a los marcadores de cada partido
-    partido.marcadorLocal = marcadorLocalAleatorio;
-    partido.marcadorVisitante = marcadorVisitanteAleatorio;
+      resultado.style.visibility = 'visible';
+      pronostico.style.visibility = 'hidden'
+
+    });
+    console.log(partidos);
+    // Actualizar las tarjetas o realizar cualquier otra operación necesaria
+    // ...
   });
-  console.log(partidos);
-  // Actualizar las tarjetas o realizar cualquier otra operación necesaria
-  // ...
-});
 
-const btnComparo = document.getElementById('btnComparoResultados');
+  const btnComparo = document.getElementById('btnComparoResultados');
 
-btnComparo.addEventListener('click', () => {
-  let puntos = 0;
+  btnComparo.addEventListener('click', () => {
+    let puntos = 0;
 
-pronosticoPartidos.forEach((pronostico, index) => {
-  const partido = partidos[index];
+    partidos.forEach((partido, index) => {
+      const tarjeta = container.children[index];
+      const spanPts = tarjeta.querySelector('.pts');
+      const pronosticoLocal = partido.pronosticoLocal;
+      const pronosticoVisitante = partido.pronosticoVisitante;
+      const resultado = tarjeta.querySelector('.resultado');
+      const pronostico = tarjeta.querySelector('.pronostico');
+      resultado.style.visibility = 'visible';
+      pronostico.style.visibility = 'hidden'
 
-  if (pronostico.marcadorLocal === partido.marcadorLocal && pronostico.marcadorVisitante === partido.marcadorVisitante) {
-    console.log(`El pronóstico del partido ${index + 1} es correcto.`);
-    // Sumar 3 puntos si el pronóstico es exacto
-    puntos += 3;
-  } else if ((pronostico.marcadorLocal > pronostico.marcadorVisitante && partido.marcadorLocal > partido.marcadorVisitante) ||
-             (pronostico.marcadorLocal < pronostico.marcadorVisitante && partido.marcadorLocal < partido.marcadorVisitante) ||
-             (pronostico.marcadorLocal === pronostico.marcadorVisitante && partido.marcadorLocal === partido.marcadorVisitante)) {
-    console.log(`El pronóstico del partido ${index + 1} es parcialmente correcto.`);
-    // Sumar 1 punto si solo se acierta el equipo ganador
-    puntos += 1;
-  } else {
-    puntos += 0;
-    // No se suma ningún punto
-  }
-});
+      // Verificar si los pronósticos son numéricos
+      if (!isNaN(pronosticoLocal) && !isNaN(pronosticoVisitante)) {
+        // Convierto los pronósticos a números
+        const pronosticoLocalNum = parseInt(pronosticoLocal);
+        const pronosticoVisitanteNum = parseInt(pronosticoVisitante);
 
-console.log(`Puntuación total: ${puntos}`);
-});
-}
+        if (
+          pronosticoLocalNum === partido.marcadorLocal &&
+          pronosticoVisitanteNum === partido.marcadorVisitante
+        ) {
+          console.log(`Sumo 3 Pts`);
+          spanPts.textContent = '3Pts';
+          puntos += 3;
+        } else if (
+          (pronosticoLocalNum > pronosticoVisitanteNum &&
+            partido.marcadorLocal > partido.marcadorVisitante) ||
+          (pronosticoLocalNum < pronosticoVisitanteNum &&
+            partido.marcadorLocal < partido.marcadorVisitante) ||
+          (pronosticoLocalNum === pronosticoVisitanteNum &&
+            partido.marcadorLocal === partido.marcadorVisitante)
+        ) {
+          console.log(`Sumo 1 Pt`);
+          spanPts.textContent = '1Pt';
+          puntos += 1;
+        } else {
+          spanPts.textContent = '0Pts';
+          puntos += 0;
+        }
+      } else {
+        // Pronóstico no numérico
+        spanPts.textContent = '0Pts';
+        puntos += 0;
+      }
+    });
+
+    console.log(`Puntuación total: ${puntos}`);
+
+    if (usuarioEncontrado.puntos === 0) {
+      usuarioEncontrado.puntos = puntos;
+    }
+
+    console.log(usuarios);
+  });
+  const btnHabilitarPronostico = document.getElementById('btnHabilitarPronostico');
+
+  btnHabilitarPronostico.addEventListener('click',() =>{
+     partidos.forEach((partido,index) =>{   
+      const tarjeta = container.children[index];
+      const resultado = tarjeta.querySelector('.resultado');
+      const pronostico = tarjeta.querySelector('.pronostico');     
+        resultado.style.visibility = 'hidden';
+        pronostico.style.visibility = 'visible';
+     });
+  });
+};
 
