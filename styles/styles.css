@@ -126,3 +126,14 @@ main{
 .cerrar{
   background-color: rgb(255, 0, 221);
 }
+.puntaje{
+  background-color: gray ;
+  height: 40px;
+  border-radius: 20px;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}

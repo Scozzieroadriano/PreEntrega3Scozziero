@@ -218,6 +218,7 @@ function agregarDiv() {
   const btnComparo = document.getElementById('btnComparoResultados');
 
   btnComparo.addEventListener('click', () => {
+    usuarioLogeado.puntos = 0 //TEMPORAL PARA QUE NO ACUMULE AL MOMENTO DE PROBAR, DESPUES IRA SUMANDO HASTA EL FINAL DEL TORNEO
     let puntos = 0;
 
     partidos.forEach((partido, index) => {
@@ -290,10 +291,55 @@ function agregarDiv() {
   });
 
   const btnSalir = document.getElementById('btnCerrarSesion');
+  //elimino los datos del session storage y actualizo la pagina
   btnSalir.addEventListener('click', ()=>{
     sessionStorage.removeItem('usuario');
     location.reload();
   });
 
+  const btnTabla = document.getElementById('btnTablaPosiciones');
+  btnTabla.addEventListener('click', ()=>{
+
+    
+    usuarios.forEach((usuario, index) => {
+      //Asigno valores aleatorios al puntaje de otros competidores y armo una tabla de posiciones en html  
+      let puntajeAleatorio = Math.floor(Math.random() * 12) + 1;
+      if (usuario.id != usuarioEncontrado.id) {
+        usuarios[index].puntos = puntajeAleatorio;
+        return;
+      }
+    });
+    //aca guardo en localstorage
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    console.log(usuarios);
+
+    //obtengo  los datos del localstorage
+    let usuariosPuntaje = JSON.parse(localStorage.getItem('usuarios'));
+    //ordeno los datos por mayor puntaje a menor puntaje
+    let usuariosOrdenados = usuariosPuntaje.sort((a, b) => b.puntos - a.puntos);
+    const container = document.querySelector("#tabla");
+
+    container.innerHTML = "";
+    usuariosOrdenados.forEach((usuario,index) => {
+      const div = document.createElement('div');
+      
+      div.innerHTML = `
+        <div class="tarjeta puntaje">
+        <span>${index+1}</span>
+        <span>${usuario.usuario}</span>
+        <span>${usuario.puntos} Pts.</span>        
+        </div>     
+        `;
+        container.appendChild(div);
+        const primerPuesto = div.querySelector('.tarjeta.puntaje');
+        if (index === 0) {          
+          primerPuesto.style.backgroundColor = "gold";
+        } else if (index === 1) {
+          primerPuesto.style.backgroundColor = "greenyellow";
+        } else if (index === 2) {
+          primerPuesto.style.backgroundColor = "green";
+        }
+    });
+  }); 
 }
 
