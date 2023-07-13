@@ -177,8 +177,8 @@ function agregarDiv() {
         pronosticoLocalSpan.textContent = ' ';
         pronosticoVisitanteSpan.textContent = ' ';
       } else {
-        pronosticoLocalSpan.textContent = marcadorLocal;
-        pronosticoVisitanteSpan.textContent = marcadorVisitante;
+        pronosticoLocalSpan.textContent = marcadorLocal === '-' ? '' : marcadorLocal;
+        pronosticoVisitanteSpan.textContent = marcadorVisitante === '-' ? '' : marcadorVisitante;
       }
     });
     console.log(partidos)
