@@ -39,7 +39,15 @@ const partidos = [
 ];
 console.log(partidos);
 //declaro una variable para capturar el boton y despues una funcion para capturar los datos de los imputs
+let usuarioLogeado = JSON.parse(sessionStorage.getItem('usuario')) || [];
+//creo la variable para usar el id del usuario y darle el puntaje al usuario logeado
+let usuarioEncontrado = null;
 let btnInicioSesion = document.getElementById("btnInicioSesion");
+console.log(usuarioLogeado);
+if (usuarioLogeado.id){
+  usuarioEncontrado = usuarioLogeado;
+  agregarDiv();
+}
 function Login() {
   let usuario = document.getElementById("username").value;
   let contrasenia = document.getElementById("password").value;
@@ -47,11 +55,9 @@ function Login() {
 }
 //con este evento inicio la funcion cada vez que apreto el boton que declare antes
 btnInicioSesion.addEventListener("click", Login);
-//creo la variable para usar el id del usuario y darle el puntaje al usuario logeado
-let usuarioEncontrado = null;
+
 //aca valido el usuario 
 function validarUsuario(usuario, contrasenia) {
-
   for (let i = 0; i < usuarios.length; i++) {
     if (usuarios[i].usuario === usuario && usuarios[i].password === contrasenia) {
       usuarioEncontrado = usuarios[i];
@@ -64,6 +70,8 @@ function validarUsuario(usuario, contrasenia) {
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
     alert("Ingreso Exitoso");
+    //Guardo el usuario en el sessionStorage
+    sessionStorage.setItem('usuario',JSON.stringify(usuarioEncontrado));
     agregarDiv();
     // Agrega aquí la lógica adicional después de iniciar sesión correctamente
   } else {
@@ -83,7 +91,7 @@ function agregarDiv() {
     div.innerHTML = `
       <div class='tarjeta'>
         <span class='fechaPartido'> ${partido.fechaPartido}</span>
-        <span class='pts'>-</span>
+        <span class='pts'></span>
         <div class='equipo Local'>
           <figure class='datosEquipo'>
             <img class='imgEquipo' alt="">
@@ -156,8 +164,6 @@ function agregarDiv() {
         }
       });
     });
-
-
   });
   const btnGuardar = document.querySelector("#guardarPronostico");
 
@@ -172,14 +178,9 @@ function agregarDiv() {
       //Modifico la propiedad de cada objeto del array
       partido.pronosticoLocal = marcadorLocal;
       partido.pronosticoVisitante = marcadorVisitante;
-      //Modifico la etiqueta html
-      if (marcadorLocal === null || marcadorVisitante === null) {
-        pronosticoLocalSpan.textContent = ' ';
-        pronosticoVisitanteSpan.textContent = ' ';
-      } else {
-        pronosticoLocalSpan.textContent = marcadorLocal === '-' ? '' : marcadorLocal;
-        pronosticoVisitanteSpan.textContent = marcadorVisitante === '-' ? '' : marcadorVisitante;
-      }
+      //Modifico la etiqueta html utilizando operador ternario
+      pronosticoLocalSpan.textContent = isNaN(marcadorLocal) ? '' : marcadorLocal;
+      pronosticoVisitanteSpan.textContent = isNaN(marcadorVisitante) ? '' : marcadorVisitante;
     });
     console.log(partidos)
   });
@@ -263,17 +264,21 @@ function agregarDiv() {
         puntos += 0;
       }
     });
+    console.log(`Puntuación total: ${puntos}`);    
+    usuarioEncontrado.puntos += puntos;
 
-    console.log(`Puntuación total: ${puntos}`);
-
-    if (usuarioEncontrado.puntos === 0) {
-      usuarioEncontrado.puntos = puntos;
-    }
-
-    console.log(usuarios);
+    usuarios.forEach((usuario, index) => {
+      if (usuario.id === usuarioEncontrado.id) {
+        usuarios[index] = usuarioEncontrado;
+        return;
+      }
+    });    
+    //actualizo los puntos en el sesion storage
+    sessionStorage.setItem('usuario', JSON.stringify(usuarioLogeado));
+    console.log(usuarioLogeado);
   });
-  const btnHabilitarPronostico = document.getElementById('btnHabilitarPronostico');
 
+  const btnHabilitarPronostico = document.getElementById('btnHabilitarPronostico');
   btnHabilitarPronostico.addEventListener('click',() =>{
      partidos.forEach((partido,index) =>{   
       const tarjeta = container.children[index];
@@ -281,7 +286,14 @@ function agregarDiv() {
       const pronostico = tarjeta.querySelector('.pronostico');     
         resultado.style.visibility = 'hidden';
         pronostico.style.visibility = 'visible';
-     });
+    });
   });
-};
+
+  const btnSalir = document.getElementById('btnCerrarSesion');
+  btnSalir.addEventListener('click', ()=>{
+    sessionStorage.removeItem('usuario');
+    location.reload();
+  });
+
+}
 
